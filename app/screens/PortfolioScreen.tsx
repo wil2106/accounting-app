@@ -1,48 +1,60 @@
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Avatar, Input, ListItem } from "@rneui/base";
 import { useEffect, useRef } from "react";
 import {
-  ActivityIndicator,
   FlatList,
   RefreshControl,
   SafeAreaView,
-  View,
-  VirtualizedList,
+  View
 } from "react-native";
+import ListFooter from "../components/ListFooter";
+import { ROUTES } from "../helpers/constants";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
+  fetchFirstClients,
+  fetchNextClients,
   selectPortfolioClients,
-  selectPortfolioStatus,
   selectPortfolioReachedEnd,
-  fetchClients,
-  portfolioSliceActions,
+  selectPortfolioStatus,
 } from "../redux/slices/portfolioSlice";
-import { Avatar, Input, ListItem, Text } from "@rneui/base";
-import { Client } from "../types";
+import { Client, HomeStackParamList } from "../types";
 
-export default function PortfolioScreen() {
-  let searchThrottleTimeout = useRef<NodeJS.Timeout>().current;
+type Props = NativeStackScreenProps<HomeStackParamList, "PORTFOLIO">;
+
+export default function PortfolioScreen({ navigation }: Props) {
+  let searchDebounceTimeout = useRef<NodeJS.Timeout>().current;
+
   const dispatch = useAppDispatch();
   const clients = useAppSelector(selectPortfolioClients);
   const status = useAppSelector(selectPortfolioStatus);
   const reachedEnd = useAppSelector(selectPortfolioReachedEnd);
 
+  const onInitFetchClients = () => {
+    dispatch(fetchFirstClients({}));
+  };
+
   useEffect(() => {
     onInitFetchClients();
   }, []);
 
-  const onInitFetchClients = () => {
-    dispatch(fetchClients({ init: true }));
-  };
-
-  const onChangeText = (text: string) => {
-    dispatch(portfolioSliceActions.setSearch(text));
-    clearTimeout(searchThrottleTimeout);
-    searchThrottleTimeout = setTimeout(() => {
-      dispatch(fetchClients({ init: true }));
+  const onChangeSearch = (search: string) => {
+    clearTimeout(searchDebounceTimeout);
+    searchDebounceTimeout = setTimeout(() => {
+      dispatch(fetchFirstClients({ search }));
     }, 500);
   };
 
+  const onLoadMore = () => {
+    dispatch(fetchNextClients());
+  };
+
   const renderItem = ({ item }: { item: Client }) => (
-    <ListItem bottomDivider>
+    <ListItem
+      bottomDivider
+      onPress={() =>
+        navigation.navigate(ROUTES.CLIENT as any, { client: item })
+      }
+    >
       <Avatar source={{ uri: item.pictureUrl }} />
       <ListItem.Content>
         <ListItem.Title>{item.name}</ListItem.Title>
@@ -56,13 +68,13 @@ export default function PortfolioScreen() {
         style={{ flex: 1, paddingHorizontal: 15, backgroundColor: "white" }}
       >
         <Input
-          placeholder="Search"
+          placeholder="Search by name"
           autoCorrect={false}
           leftIcon={{ type: "feather", name: "search" }}
-          onChangeText={onChangeText}
-          style={{ paddingBottom: 0 }}
+          onChangeText={onChangeSearch}
         />
         <FlatList
+          style={{ flex: 1 }}
           keyExtractor={(item, index) => `${item.id}-${index}`}
           data={clients}
           renderItem={renderItem}
@@ -72,17 +84,13 @@ export default function PortfolioScreen() {
               refreshing={status === "init-loading"}
             />
           }
-          ListFooterComponent={
-            reachedEnd ? (
-              <Text
-                style={{ alignSelf: "center", marginTop: 15, color: "grey" }}
-              >
-                Reached end of list
-              </Text>
-            ) : (
-              <></>
-            )
-          }
+          ListFooterComponent={() => (
+            <ListFooter
+              status={status}
+              reachedEnd={reachedEnd}
+              onLoadMore={onLoadMore}
+            />
+          )}
         />
       </View>
     </SafeAreaView>

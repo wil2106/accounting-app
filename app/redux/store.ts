@@ -6,6 +6,8 @@ import {
 } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
 import portfolioReducer from "./slices/portfolioSlice";
+import clientReducer from "./slices/clientSlice";
+import fiscalMonthReducer from "./slices/fiscalMonthSlice";
 import {
   persistStore,
   FLUSH,
@@ -18,15 +20,15 @@ import {
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  portfolio: portfolioReducer
+  portfolio: portfolioReducer,
+  client: clientReducer,
+  fiscalMonth: fiscalMonthReducer
 });
 
-// export const store = configureStore({
-//   reducer: rootReducer,
-// });
 
 export const store = configureStore({
   reducer: rootReducer,
+  // remove warning
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

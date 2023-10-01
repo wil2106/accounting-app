@@ -5,7 +5,6 @@ import { Client } from "../../types";
 export const FETCH_CLIENTS_LIMIT = 10;
 
 const fetchClients = async (token: string, search?: string, cursor?: number): Promise<Client[]> => {
-  console.log(search, cursor);
   const res = await axios.get(config.FETCH_CLIENTS_ENDPOINT, {
     headers: {
       authorization: `Bearer ${token}`,

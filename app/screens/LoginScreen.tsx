@@ -1,10 +1,11 @@
+import { Button, Input, Text } from "@rneui/base";
+import { Image } from "expo-image";
+import { createRef, useEffect, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  ScrollView,
-  TextInput,
-  View,
+  View
 } from "react-native";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
@@ -13,9 +14,6 @@ import {
   selectAuthErrorMessage,
   selectAuthStatus,
 } from "../redux/slices/authSlice";
-import { Image } from "expo-image";
-import { Button, Input, Text } from "@rneui/base";
-import { createRef, useEffect, useState } from "react";
 
 export default function LoginScreen() {
   const passwordInput = createRef<any>();
