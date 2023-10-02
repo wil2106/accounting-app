@@ -1,12 +1,7 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Avatar, Input, ListItem } from "@rneui/base";
 import { useEffect, useRef } from "react";
-import {
-  FlatList,
-  RefreshControl,
-  SafeAreaView,
-  View
-} from "react-native";
+import { FlatList, RefreshControl, View } from "react-native";
 import ListFooter from "../components/ListFooter";
 import { ROUTES } from "../helpers/constants";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -63,36 +58,32 @@ export default function PortfolioScreen({ navigation }: Props) {
     </ListItem>
   );
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View
-        style={{ flex: 1, paddingHorizontal: 15, backgroundColor: "white" }}
-      >
-        <Input
-          placeholder="Search by name"
-          autoCorrect={false}
-          leftIcon={{ type: "feather", name: "search" }}
-          onChangeText={onChangeSearch}
-        />
-        <FlatList
-          style={{ flex: 1 }}
-          keyExtractor={(item, index) => `${item.id}-${index}`}
-          data={clients}
-          renderItem={renderItem}
-          refreshControl={
-            <RefreshControl
-              onRefresh={onInitFetchClients}
-              refreshing={status === "init-loading"}
-            />
-          }
-          ListFooterComponent={() => (
-            <ListFooter
-              status={status}
-              reachedEnd={reachedEnd}
-              onLoadMore={onLoadMore}
-            />
-          )}
-        />
-      </View>
-    </SafeAreaView>
+    <View style={{ flex: 1, paddingHorizontal: 15, backgroundColor: "white" }}>
+      <Input
+        placeholder="Search by name"
+        autoCorrect={false}
+        leftIcon={{ type: "feather", name: "search" }}
+        onChangeText={onChangeSearch}
+      />
+      <FlatList
+        style={{ flex: 1 }}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
+        data={clients}
+        renderItem={renderItem}
+        refreshControl={
+          <RefreshControl
+            onRefresh={onInitFetchClients}
+            refreshing={status === "init-loading"}
+          />
+        }
+        ListFooterComponent={() => (
+          <ListFooter
+            status={status}
+            reachedEnd={reachedEnd}
+            onLoadMore={onLoadMore}
+          />
+        )}
+      />
+    </View>
   );
 }

@@ -46,8 +46,9 @@ const deleteBankOperation = async (token: string, bankOperationId: number) => {
 const updateBankOperation = async (
   token: string,
   bankOperationId: number,
+  createdAt: string,
   amount: number,
-  description: string
+  wording: string
 ): Promise<BankOperation> => {
   const res = await axios.patch(
     config.UPDATE_BANK_OPERATION_ENDPOINT.replace(
@@ -55,9 +56,9 @@ const updateBankOperation = async (
       bankOperationId.toString()
     ),
     {
-      createdAt: "2023-08-14T00:00:00.000Z",
+      createdAt,
       amount,
-      wording: description,
+      wording,
     },
     {
       headers: {
@@ -71,8 +72,9 @@ const updateBankOperation = async (
 const createBankOperation = async (
   token: string,
   fiscalMonthId: number,
+  createdAt: string,
   amount: number,
-  description: string
+  wording: string
 ): Promise<BankOperation> => {
   const res = await axios.post(
     config.CREATE_BANK_OPERATION_ENDPOINT.replace(
@@ -80,9 +82,9 @@ const createBankOperation = async (
       fiscalMonthId.toString()
     ),
     {
-      createdAt: "2023-08-14T00:00:00.000Z",
+      createdAt,
       amount,
-      wording: description,
+      wording,
     },
     {
       headers: {

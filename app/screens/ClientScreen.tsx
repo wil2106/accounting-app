@@ -1,12 +1,7 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Icon, ListItem } from "@rneui/base";
 import { useEffect } from "react";
-import {
-  FlatList,
-  RefreshControl,
-  SafeAreaView,
-  View
-} from "react-native";
+import { FlatList, RefreshControl, View } from "react-native";
 import ListFooter from "../components/ListFooter";
 import { ROUTES } from "../helpers/constants";
 import utils from "../helpers/utils";
@@ -73,30 +68,26 @@ export default function ClientScreen({ route, navigation }: Props) {
     );
   };
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View
-        style={{ flex: 1, paddingHorizontal: 15, backgroundColor: "white" }}
-      >
-        <FlatList
-          style={{ flex: 1 }}
-          keyExtractor={(item, index) => `${item.id}-${index}`}
-          data={fiscalMonths}
-          renderItem={renderItem}
-          refreshControl={
-            <RefreshControl
-              onRefresh={onInitFetchFiscalMonths}
-              refreshing={status === "init-loading"}
-            />
-          }
-          ListFooterComponent={() => (
-            <ListFooter
-              status={status}
-              reachedEnd={reachedEnd}
-              onLoadMore={onLoadMore}
-            />
-          )}
-        />
-      </View>
-    </SafeAreaView>
+    <View style={{ flex: 1, paddingHorizontal: 15, backgroundColor: "white" }}>
+      <FlatList
+        style={{ flex: 1 }}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
+        data={fiscalMonths}
+        renderItem={renderItem}
+        refreshControl={
+          <RefreshControl
+            onRefresh={onInitFetchFiscalMonths}
+            refreshing={status === "init-loading"}
+          />
+        }
+        ListFooterComponent={() => (
+          <ListFooter
+            status={status}
+            reachedEnd={reachedEnd}
+            onLoadMore={onLoadMore}
+          />
+        )}
+      />
+    </View>
   );
 }

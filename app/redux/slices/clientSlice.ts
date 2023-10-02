@@ -87,20 +87,7 @@ export const clientSlice = createSlice({
     reset: (state) => {
       state = initialState;
     },
-    substractFiscalMonthBalance: (
-      state,
-      action: PayloadAction<{ fiscalMonthId: number; amount: number }>
-    ) => {
-      state.fiscalMonths = state.fiscalMonths.map((fiscalMonth) =>
-        fiscalMonth.id === action.payload.fiscalMonthId
-          ? {
-              ...fiscalMonth,
-              balance: fiscalMonth.balance - action.payload.amount,
-            }
-          : fiscalMonth
-      );
-    },
-    AddFiscalMonthBalance: (
+    addFiscalMonthBalance: (
       state,
       action: PayloadAction<{ fiscalMonthId: number; amount: number }>
     ) => {

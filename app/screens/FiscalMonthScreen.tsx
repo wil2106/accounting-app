@@ -1,6 +1,13 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { BankOperation, HomeStackParamList } from "../types";
+import { Button, FAB, Icon, ListItem } from "@rneui/base";
+import { Input } from "@rneui/themed";
+import { useEffect, useRef } from "react";
+import { FlatList, RefreshControl, Text, View } from "react-native";
+import ListFooter from "../components/ListFooter";
+import { ROUTES } from "../helpers/constants";
+import utils from "../helpers/utils";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { clientSliceActions } from "../redux/slices/clientSlice";
 import {
   deleteBankOperation,
   fetchFirstBankOperations,
@@ -9,23 +16,8 @@ import {
   selectFiscalMonthReachedEnd,
   selectFiscalMonthStatus,
 } from "../redux/slices/fiscalMonthSlice";
-import { useEffect, useRef, useState } from "react";
-import { Button, Card, FAB, Icon, ListItem } from "@rneui/base";
-import {
-  FlatList,
-  Modal,
-  Pressable,
-  RefreshControl,
-  SafeAreaView,
-  Text,
-  View,
-} from "react-native";
-import ListFooter from "../components/ListFooter";
-import { Input } from "@rneui/themed";
-import utils from "../helpers/utils";
-import { clientSliceActions } from "../redux/slices/clientSlice";
 import { RootState } from "../redux/store";
-import EditBankOperationModal from "../components/EditBankOperationModal";
+import { BankOperation, HomeStackParamList } from "../types";
 
 type Props = NativeStackScreenProps<HomeStackParamList, "FISCAL_MONTH">;
 export default function FiscalMonthScreen({ route, navigation }: Props) {
@@ -40,15 +32,6 @@ export default function FiscalMonthScreen({ route, navigation }: Props) {
   const bankOperations = useAppSelector(selectFiscalMonthBankOperations);
   const status = useAppSelector(selectFiscalMonthStatus);
   const reachedEnd = useAppSelector(selectFiscalMonthReachedEnd);
-
-  const [editBankOperationDialogStatus, setEditBankOperationDialogStatus] =
-    useState<{
-      visible: boolean;
-      bankOperation: BankOperation | null;
-    }>({
-      visible: false,
-      bankOperation: null,
-    });
 
   const onInitFetchBankOperations = () => {
     if (!fiscalMonth?.id) {
@@ -90,9 +73,9 @@ export default function FiscalMonthScreen({ route, navigation }: Props) {
     try {
       await dispatch(deleteBankOperation({ bankOperationId })).unwrap();
       dispatch(
-        clientSliceActions.substractFiscalMonthBalance({
+        clientSliceActions.addFiscalMonthBalance({
           fiscalMonthId: fiscalMonth.id,
-          amount,
+          amount: -amount,
         })
       );
     } catch (err) {
@@ -104,8 +87,8 @@ export default function FiscalMonthScreen({ route, navigation }: Props) {
     return (
       <ListItem.Swipeable
         onPress={() => {
-          setEditBankOperationDialogStatus({
-            visible: true,
+          navigation.navigate(ROUTES.BANK_OPERATION as any, {
+            fiscalMonth: fiscalMonth,
             bankOperation: item,
           });
         }}
@@ -114,8 +97,8 @@ export default function FiscalMonthScreen({ route, navigation }: Props) {
             title="Edit"
             onPress={() => {
               reset();
-              setEditBankOperationDialogStatus({
-                visible: true,
+              navigation.navigate(ROUTES.BANK_OPERATION as any, {
+                fiscalMonth: fiscalMonth,
                 bankOperation: item,
               });
             }}
@@ -152,7 +135,7 @@ export default function FiscalMonthScreen({ route, navigation }: Props) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <View
         style={{ flex: 1, paddingHorizontal: 15, backgroundColor: "white" }}
       >
@@ -187,9 +170,8 @@ export default function FiscalMonthScreen({ route, navigation }: Props) {
           icon={{ name: "add", color: "white" }}
           color="dodgerblue"
           onPress={() => {
-            setEditBankOperationDialogStatus({
-              visible: true,
-              bankOperation: null,
+            navigation.navigate(ROUTES.BANK_OPERATION as any, {
+              fiscalMonth: fiscalMonth,
             });
           }}
         />
@@ -206,7 +188,7 @@ export default function FiscalMonthScreen({ route, navigation }: Props) {
         }}
       >
         <View style={{ flexDirection: "row", gap: 3, alignItems: "center" }}>
-          <Icon name="bank-outline" type="material-community" />
+          <Icon name="arrow-right-bottom" type="material-community-icons" />
           <Text>{utils.formatAmount(fiscalMonth?.balance)}</Text>
         </View>
         {fiscalMonth?.balance !== undefined &&
@@ -256,24 +238,10 @@ export default function FiscalMonthScreen({ route, navigation }: Props) {
               color: fiscalMonth?.controlBalance ? "black" : "lightgrey",
             }}
           >
-            {utils.formatAmount(fiscalMonth?.controlBalance)}
+            {utils.formatAmount(fiscalMonth?.controlBalance ?? 0)}
           </Text>
         </View>
       </View>
-      {
-        fiscalMonth?.id !== undefined && (
-          <EditBankOperationModal
-          fiscalMonthId={fiscalMonth.id}
-          status={editBankOperationDialogStatus}
-          onClose={() => {
-            setEditBankOperationDialogStatus({
-              visible: false,
-              bankOperation: null,
-            });
-          }}
-        />
-        )
-      }
-    </SafeAreaView>
+    </View>
   );
 }

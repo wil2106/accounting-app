@@ -10,8 +10,8 @@ export type FiscalMonth = {
   date: string;
   clientId: number;
   balance: number;
-  controlBalance?: number;
-  controlBankStatementUrl?: string;
+  controlBalance?: number | null;
+  controlBankStatementUrl?: string | null;
 }
 
 export type BankOperation = {
@@ -30,4 +30,5 @@ export type HomeStackParamList = {
   PORTFOLIO: undefined;
   CLIENT: {client?: Client};
   FISCAL_MONTH: {fiscalMonth?: FiscalMonth};
+  BANK_OPERATION: {fiscalMonth?: FiscalMonth, bankOperation?: BankOperation}
 };

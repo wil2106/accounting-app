@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Button } from "@rneui/base";
 import { StatusBar } from "expo-status-bar";
-import { Alert } from "react-native";
+import { Alert, Linking } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
@@ -16,6 +16,10 @@ import FiscalMonthScreen from "./screens/FiscalMonthScreen";
 import LoginScreen from "./screens/LoginScreen";
 import PortfolioScreen from "./screens/PortfolioScreen";
 import { AuthStackParamList, HomeStackParamList } from "./types";
+import BankOperation from "./screens/BankOperation";
+import { registerCustomIconType } from "@rneui/base";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+registerCustomIconType('material-community-icons', MaterialCommunityIcons);
 
 let AuthStack = createStackNavigator<AuthStackParamList>();
 let HomeStack = createStackNavigator<HomeStackParamList>();
@@ -56,7 +60,7 @@ export function Nav() {
     <>
       {authenticated ? (
         <HomeStack.Navigator
-          screenOptions={({navigation}) => {
+          screenOptions={({ navigation }) => {
             return {
               headerLeft: () => (
                 <Button
@@ -65,13 +69,13 @@ export function Nav() {
                   onPress={() => navigation.goBack()}
                 />
               ),
-            }
+            };
           }}
         >
           <HomeStack.Screen
             name={ROUTES.PORTFOLIO as any}
             component={PortfolioScreen}
-            options={({navigation}) => {
+            options={({ navigation }) => {
               return {
                 headerTitle: "Portfolio",
                 headerRight: () => (
@@ -81,27 +85,59 @@ export function Nav() {
                     onPress={onLogout}
                   />
                 ),
-                headerLeft: undefined,
-              }
+                headerLeft: () => <></>,
+              };
             }}
           />
           <HomeStack.Screen
             name={ROUTES.CLIENT as any}
             component={ClientScreen}
-            options={({ route }) => ({ title: `${route.params.client?.name} fiscal months` ?? 'Fiscal Months' })}
+            options={({ route }) => ({
+              title:
+                `${route.params.client?.name} fiscal months` ?? "Fiscal Months",
+            })}
           />
           <HomeStack.Screen
             name={ROUTES.FISCAL_MONTH as any}
             component={FiscalMonthScreen}
             options={({ route }) => {
-              let title = 'Operations';
-              if (route.params.fiscalMonth?.date){
-                title = `${utils.getMonthYearStringFromDateString(route.params.fiscalMonth.date)} operations`;
+              let title = "Operations";
+              if (route.params.fiscalMonth?.date) {
+                title = `${utils.getMonthYearStringFromDateString(
+                  route.params.fiscalMonth.date
+                )} operations`;
               }
               return {
-                title
-              }
+                title,
+                headerRight: () => (
+                  <Button
+                    icon={{
+                      type: "feather",
+                      name: "file-text",
+                      color: route.params.fiscalMonth?.controlBankStatementUrl ? "black" : "lightgrey"
+                    }}
+                    type="clear"
+                    onPress={() => {
+                      if (!route.params.fiscalMonth?.controlBankStatementUrl){
+                        return;
+                      }
+                      Linking.openURL(route.params.fiscalMonth.controlBankStatementUrl);
+                    }}
+                  />
+                ),
+              };
             }}
+          />
+          <HomeStack.Screen
+            name={ROUTES.BANK_OPERATION as any}
+            component={BankOperation}
+            options={({ route }) => ({
+              title: route.params?.bankOperation
+                ? `Edit bank operation #${route.params.bankOperation.id}`
+                : "Create bank operation",
+              presentation: "modal",
+              headerLeft: () => <></>,
+            })}
           />
         </HomeStack.Navigator>
       ) : (

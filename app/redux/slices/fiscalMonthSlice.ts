@@ -1,4 +1,9 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  PayloadAction,
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import utils from "../../helpers/utils";
 import { RootState } from "../store";
 import { BankOperation, Client } from "../../types";
@@ -48,9 +53,10 @@ export const updateBankOperation = createAsyncThunk(
   async (
     {
       bankOperationId,
+      createdAt,
       amount,
       description,
-    }: { bankOperationId: number; amount: number; description: string },
+    }: { bankOperationId: number; createdAt: string; amount: number; description: string },
     { dispatch, getState, rejectWithValue, fulfillWithValue }
   ) => {
     try {
@@ -59,6 +65,7 @@ export const updateBankOperation = createAsyncThunk(
       const bankOperation = await fiscalMonthAPI.updateBankOperation(
         state.auth.token,
         bankOperationId,
+        createdAt,
         amount,
         description
       );
@@ -78,9 +85,10 @@ export const createBankOperation = createAsyncThunk(
   async (
     {
       fiscalMonthId,
+      createdAt,
       amount,
       description,
-    }: { fiscalMonthId: number; amount: number; description: string },
+    }: { fiscalMonthId: number; createdAt: string; amount: number; description: string },
     { dispatch, getState, rejectWithValue, fulfillWithValue }
   ) => {
     try {
@@ -89,6 +97,7 @@ export const createBankOperation = createAsyncThunk(
       const bankOperation = await fiscalMonthAPI.createBankOperation(
         state.auth.token,
         fiscalMonthId,
+        createdAt,
         amount,
         description
       );
@@ -254,16 +263,20 @@ export const fiscalMonthSlice = createSlice({
 
 export const fiscalMonthSliceActions = fiscalMonthSlice.actions;
 
-export const selectFiscalMonthBankOperations = (state: RootState) =>
-  [...state.fiscalMonth.bankOperations].sort((a, b) => {
-    const aDate = parseISO(a.createdAt);
-    const bDate = parseISO(b.createdAt);
-    if (isValid(aDate) && isValid(bDate)) {
-      return aDate.getTime() - bDate.getTime();
-    } else {
-      return 0;
-    }
-  });
+export const selectFiscalMonthBankOperations = createSelector(
+  (state: RootState) => state.fiscalMonth.bankOperations,
+  (bankOperations) =>
+    [...bankOperations].sort((a, b) => {
+      const aDate = parseISO(a.createdAt);
+      const bDate = parseISO(b.createdAt);
+      if (isValid(aDate) && isValid(bDate)) {
+        return aDate.getTime() - bDate.getTime();
+      } else {
+        return 0;
+      }
+    })
+);
+
 export const selectFiscalMonthStatus = (state: RootState) =>
   state.fiscalMonth.status;
 export const selectFiscalMonthReachedEnd = (state: RootState) =>
