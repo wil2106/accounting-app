@@ -48,18 +48,15 @@ export const autoLogin = createAsyncThunk(
   }
 );
 
-export const logout =
-  (): AppThunk =>
-  (dispatch, _) => {
-    dispatch(authSlice.actions.reset);
-  };
-
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    reset: (state) => {
-      state = initialState;
+    logout: (state) => {
+      state.authenticated = false,
+      state.token = null,
+      state.status = 'idle',
+      state.errorMessage = null
     },
   },
   extraReducers: (builder) => {

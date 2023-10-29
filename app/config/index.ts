@@ -1,4 +1,4 @@
-const apiEndpoint = "http://localhost:5000/api";
+const apiEndpoint = "http://localhost:3000/api";
 
 const config = {
   LOGIN_ENDPOINT: `${apiEndpoint}/accountant/login`,

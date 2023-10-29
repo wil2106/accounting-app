@@ -9,7 +9,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { ROUTES } from "./helpers/constants";
 import utils from "./helpers/utils";
 import { useAppDispatch, useAppSelector } from "./redux/hooks";
-import { logout, selectAuthAuthenticated } from "./redux/slices/authSlice";
+import { authSliceActions, logout, selectAuthAuthenticated } from "./redux/slices/authSlice";
 import { persistor, store } from "./redux/store";
 import ClientScreen from "./screens/ClientScreen";
 import FiscalMonthScreen from "./screens/FiscalMonthScreen";
@@ -51,7 +51,7 @@ export function Nav() {
       {
         text: "Logout",
         onPress: () => {
-          dispatch(logout());
+          dispatch(authSliceActions.logout());
         },
       },
     ]);

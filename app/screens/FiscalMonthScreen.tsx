@@ -1,6 +1,7 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Button, FAB, Icon, ListItem } from "@rneui/base";
 import { Input } from "@rneui/themed";
+import { format, parseISO } from "date-fns";
 import { useEffect, useRef } from "react";
 import { FlatList, RefreshControl, Text, View } from "react-native";
 import ListFooter from "../components/ListFooter";
@@ -122,8 +123,11 @@ export default function FiscalMonthScreen({ route, navigation }: Props) {
         <Text style={{ color: "grey" }}>#{item.id}</Text>
         <ListItem.Content>
           <ListItem.Title>
-            <Text>{item.wording}</Text>
+            {item.wording}
           </ListItem.Title>
+          <ListItem.Subtitle>
+            <Text style={{ color: "lightgrey"}}>{format(parseISO(item.createdAt), "dd LLL, HH:mm")}</Text>
+          </ListItem.Subtitle>
         </ListItem.Content>
         <ListItem.Content right>
           <Text style={{ fontWeight: "bold" }}>

@@ -1,6 +1,5 @@
 import { Button } from "@rneui/base";
-import { ActivityIndicator, Text } from "react-native";
-import { View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 
 const ListFooter = ({
   status,

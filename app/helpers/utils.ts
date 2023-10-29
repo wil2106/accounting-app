@@ -6,7 +6,6 @@ const utils = {
   getErrorMessage: (error: any): string => {
     let message = DEFAULT_ERROR_MESSAGE;
     if (axios.isAxiosError(error)) {
-      console.log(error.response?.data);
       if (
         error.response?.status &&
         error.response?.data?.reason &&
