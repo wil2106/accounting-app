@@ -1,0 +1,44 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl", "linux-musl-openssl-3.0.x"]
+}
+
+model Accountant {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+  clients  Client[]
+}
+
+model Client {
+  id           Int           @id @default(autoincrement())
+  pictureUrl   String?
+  name         String        @unique
+  accountant   Accountant    @relation(fields: [accountantId], references: [id])
+  accountantId Int
+  fiscalMonths FiscalMonth[]
+}
+
+model FiscalMonth {
+  id                      Int         @id @default(autoincrement())
+  date                    DateTime
+  client                  Client      @relation(fields: [clientId], references: [id])
+  clientId                Int
+  operations              BankOperation[]
+  controlBalance          Int?
+  controlBankStatementUrl String?
+}
+
+model BankOperation {
+  id            Int         @id @default(autoincrement())
+  createdAt     DateTime
+  wording       String
+  amount        Int
+  fiscalMonth   FiscalMonth @relation(fields: [fiscalMonthId], references: [id])
+  fiscalMonthId Int
+}

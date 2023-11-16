@@ -1,0 +1,48 @@
+version: "1"
+services:
+  api:
+    container_name: dougs-api
+    ports:
+      - 3000:3000
+    build:
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    volumes:
+      - /app/node_modules
+      - ./:/app
+    networks:
+      - backend
+    environment:
+      NODE_ENV: development
+      API_PORT: 3000
+      APP_JWT_SECRET: a98db973kwl8xp1lz94kjf0bma5pez
+      DATABASE_URL: postgresql://postgres:master123@db:5432/postgresDB?schema=public
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_DB=postgresDB
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=master123
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
+volumes:
+  db:
+    driver: local
