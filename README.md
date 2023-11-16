@@ -4,6 +4,9 @@ App stack: typescript, react-native, expo, redux, rn elements, axios
 Server stack: node.js, fastify, prisma, bcryptjs, jsonwebtoken
 Database: Postgresql
 
+## Demo
+[![Demo](./demo.mp4)]
+
 ## How to run
 ### 1. Server
 - Go to server's folder
