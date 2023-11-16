@@ -5,7 +5,7 @@ Server stack: node.js, fastify, prisma, bcryptjs, jsonwebtoken
 Database: Postgresql
 
 ## Demo
-[![Demo](./demo.mp4)]
+https://github.com/wil2106/dougs/assets/25795688/f91760c4-005c-4d8f-bcf1-2ef35df049ac
 
 ## How to run
 ### 1. Server
