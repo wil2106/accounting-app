@@ -5,7 +5,11 @@
 - Database: Postgresql
 
 ## Demo
-https://github.com/wil2106/dougs/assets/25795688/f91760c4-005c-4d8f-bcf1-2ef35df049ac
+
+
+https://github.com/wil2106/dougs/assets/25795688/d8d2d40d-5c3a-4c63-8555-cace15de8823
+
+
 
 ## How to run
 ### 1. Server
