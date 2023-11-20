@@ -24,3 +24,5 @@ https://github.com/wil2106/dougs/assets/25795688/d8d2d40d-5c3a-4c63-8555-cace15d
 ## Login
  - email: test@gmail.com
  - password: test1234
+
+nb: server is missing a service layer
