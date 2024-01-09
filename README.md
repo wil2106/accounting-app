@@ -1,4 +1,4 @@
-# Secured App to manage bank operations per fiscal months for accountants (Job technical test)
+# Secured App to manage bank operations per fiscal months for accountants
 
 - App stack: typescript, react-native, expo, redux, rn elements, axios
 - Server stack: node.js, fastify, prisma, bcryptjs, jsonwebtoken
